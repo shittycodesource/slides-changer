@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { db } from '../firebase/index.js';
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, increment, onSnapshot, updateDoc } from "firebase/firestore";
 
 Vue.use(Vuex);
 
@@ -50,6 +50,28 @@ export default new Vuex.Store({
                 commit("SET_SNAPSHOT", snapshot);
             } catch(error) {
                 console.log('fetchSlides error', error);
+                throw error;
+            }
+        },
+
+        async updateSlide({}, direction) {
+            try {
+                const func = direction == "+" ? increment(1) : increment(-1);
+
+                await updateDoc(doc(db, "slides", "slide"), { activePosition: func });
+            } catch(error) {
+                console.log('update slide error', error);
+                throw error;
+            }
+        },
+
+        async updateFit({}, currentSetting) {
+            try {
+                const mode = currentSetting == "cover" ? "fit" : "cover";
+
+                await updateDoc(doc(db, "slides", "slide"), { settings: { fit: mode } });
+            } catch(error) {
+                console.log('update fit error', error);
                 throw error;
             }
         }

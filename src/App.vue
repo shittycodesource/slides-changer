@@ -1,11 +1,7 @@
 <template>
     <div id="app">
 
-        <div 
-            class="view" 
-            @click="changeView"
-        >
-        
+        <div class="view">
             <div
                 v-if="isLoading == false && isError == false"
                 v-for="(data, index) in getSlides"
@@ -23,10 +19,17 @@
 
         </div>
 
+        <controls-panel 
+            @changePosition="changePosition"
+            @changeFit="changeFit"
+        ></controls-panel>
+
     </div>
 </template>
 
 <script>
+import ControlsPanel from './components/ControlsPanel.vue';
+
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -37,14 +40,28 @@ export default {
             isError: false,
         }
     },
+    components: {
+        ControlsPanel
+    },
     computed: {
         ...mapGetters(["getSlides", "getSettings", "getActivePosition"]),
     },
     methods: {
-        ...mapActions(['fetchSlides']),
-        changeView() {
-            this.activePosition++;
+        ...mapActions(['fetchSlides', 'updateSlide', 'updateFit']),
+        async changePosition(direction) {
+            try {
+                await this.updateSlide(direction);
+            } catch(error) {
+                throw error;
+            }
         },
+        async changeFit(currentSetting) {
+            try {
+                await this.updateFit(currentSetting);
+            } catch(error) {
+                throw error;
+            }
+        }
     },
     async created() {
         try  {
