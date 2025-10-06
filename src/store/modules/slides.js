@@ -23,11 +23,8 @@ export default {
             const slides = state.slides;
             const position = data.slide.position;
             const index = slides.indexOf(slides.find(item => item.url == data.slide.url));
-            console.log('what the fuck', position, index);
 
             if (data.direction == '-') {
-                console.log('Minus');
-
                 slides[index].position -= 1;
                 
                 const prev = slides[index - 1];
@@ -37,13 +34,10 @@ export default {
                 slides[index] = prev;
 
                 if (index == 0) {
-                    console.log('Nope.');
                     return false;
                 }
 
             } else {
-                console.log("Plus");
-
                 slides[index].position += 1;
                 
                 const next = slides[index + 1];
@@ -53,13 +47,22 @@ export default {
                 slides[index] = next    ;
 
                 if (index == (slides.length - 1)) {
-                    console.log('Nope.');
                     return false;
                 }
             }
 
             state.slides = slides;
+        },
 
+        DELETE_SLIDE(state, data) {
+            const slides = state.slides
+            const index = slides.indexOf(slides.find(item => item.url == data.url && item.position == data.position));
+
+            console.log(index)
+
+            slides.splice(index, 1);
+
+            state.slides = slides;
         }
     },
     
@@ -118,6 +121,9 @@ export default {
         },
         
 
+        deleteSlide({commit}, data) {
+            commit("DELETE_SLIDE", data);
+        },
 
         moveSlide({commit}, data) {
             commit("MOVE_SLIDE", data);

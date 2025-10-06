@@ -21,7 +21,7 @@
                 <img :src="item.url"  class="uploaded__img"/>
                 <div class="uploaded__number">{{ item.position + 1 }}</div>
 
-                <button class="uploaded__delete" type="button">x</button>
+                <button class="uploaded__delete" type="button" @click="del(item)">x</button>
                 <div class="uploaded__arrows">
                     <button class="uploaded__left" type="button" @click="move(item, '-')">&lt;</button>
                     <button class="uploaded__right" type="button" @click="move(item, '+')">></button>
@@ -32,7 +32,13 @@
 
         <br/><br/>
 
-        <button type="button" @click="saveOrder">Save order</button>
+        <button 
+            v-if="getSlides.length"
+            
+            type="button" 
+            :disabled="isRequestActive" 
+            @click="saveOrder" 
+        >Save order</button>
     
 
 
@@ -53,10 +59,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['moveSlide', 'slidesUpdatePositions']),
+        ...mapActions(['moveSlide', 'deleteSlide', 'slidesUpdatePositions']),
 
         move(data, direction) {
             this.moveSlide({ slide: data, direction });
+        },
+
+        del(data) {
+            this.deleteSlide(data)
         },
 
         async saveOrder() {
