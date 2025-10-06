@@ -13,8 +13,7 @@
             Current:
             {{ getSettings.fit }}
 
-            <br/>
-            <br/>
+            <br/><br/>
             Slide: {{ getActivePosition }}
         </button>
 
@@ -59,13 +58,13 @@ export default {
 
         &__toggle {
             height: 100%;
-            min-width: 80px;
+            min-width: 100px;
 
             background: grey;
             cursor: pointer;
 
             font-family: inherit;
-            // font-size: 40px;
+            font-size: 25px;
             color: #fff;
 
             // border: none;
@@ -86,6 +85,14 @@ export default {
 
             &:disabled {
                 opacity: .5; 
+            }
+        }
+
+        @media (max-width: 600px) {
+            flex-direction: column;
+
+            &__toggle {
+                width: 100%;
             }
         }
     }
