@@ -21,10 +21,13 @@ export default {
 
         MOVE_SLIDE(state, data) {
             const slides = state.slides;
-            const position = data.slide.position;
             const index = slides.indexOf(slides.find(item => item.url == data.slide.url));
 
             if (data.direction == '-') {
+                if (index == 0) {
+                    return false;
+                }
+
                 slides[index].position -= 1;
                 
                 const prev = slides[index - 1];
@@ -32,12 +35,12 @@ export default {
                 
                 slides[index - 1] = slides[index];
                 slides[index] = prev;
-
-                if (index == 0) {
+            } else {
+                console.log(index, slides.length)
+                if (index + 1 == slides.length) {
                     return false;
                 }
 
-            } else {
                 slides[index].position += 1;
                 
                 const next = slides[index + 1];
@@ -45,10 +48,6 @@ export default {
                 
                 slides[index + 1] = slides[index];
                 slides[index] = next    ;
-
-                if (index == (slides.length - 1)) {
-                    return false;
-                }
             }
 
             state.slides = slides;
