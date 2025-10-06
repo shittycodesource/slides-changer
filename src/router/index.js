@@ -1,46 +1,31 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import MainView from '../views/MainView.vue';
-import AuthView from '../views/AuthView.vue';
-import PanelView from '../views/PanelView.vue';
+import routes from './routes.js';
 
-Vue.use(VueRouter)
+import store from '../store';
 
-const routes = [
+Vue.use(VueRouter);
 
-    {
-        path: '/',
-        name: 'main',
-        component: MainView
-    },
-    {
-        path: '/auth',
-        name: 'main',
-        component: AuthView
-    },
-    {
-        path: '/panel',
-        name: 'panel',
-        component: PanelView
-    },
 
-//   {
-//     path: '/',
-//     name: 'home',
-//     component: HomeView
-//   },
-//   {
-//     path: '/about',
-//     name: 'about',
-//     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-//   }
-]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
 })
 
-export default router
+// Route guard
+router.beforeEach((from, to, next) => {
+    if (to.meta.authOnly || (to.name == null && from.meta.authOnly)) {
+        if (!store.getters.getCurrentUser) {
+            router.push("/");
+
+            return false;
+        }
+    }
+    
+    next();
+})
+
+export default router;

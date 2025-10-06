@@ -16,6 +16,50 @@ export default {
 
         SET_SNAPSHOT(state, snapshot) {
             state.snapshot = snapshot;
+        },
+
+
+        MOVE_SLIDE(state, data) {
+            const slides = state.slides;
+            const position = data.slide.position;
+            const index = slides.indexOf(slides.find(item => item.url == data.slide.url));
+            console.log('what the fuck', position, index);
+
+            if (data.direction == '-') {
+                console.log('Minus');
+
+                slides[index].position -= 1;
+                
+                const prev = slides[index - 1];
+                prev.position += 1;
+                
+                slides[index - 1] = slides[index];
+                slides[index] = prev;
+
+                if (index == 0) {
+                    console.log('Nope.');
+                    return false;
+                }
+
+            } else {
+                console.log("Plus");
+
+                slides[index].position += 1;
+                
+                const next = slides[index + 1];
+                next.position -= 1;
+                
+                slides[index + 1] = slides[index];
+                slides[index] = next    ;
+
+                if (index == (slides.length - 1)) {
+                    console.log('Nope.');
+                    return false;
+                }
+            }
+
+            state.slides = slides;
+
         }
     },
     
@@ -59,12 +103,30 @@ export default {
                 console.error('updateFit error', error);
                 throw error;
             }
+        },
+
+        async slidesUpdatePositions({getters}) {
+            try {
+                if (!getters.getCurrentUser) return false;
+
+                const slides = getters.getSlides;
+                await updateDoc(doc(db, "slides", "slide"), { slides: slides });
+            } catch(error) {
+                console.error("slidesUpdatePositions error: ", error);
+                throw error;
+            }
+        },
+        
+
+
+        moveSlide({commit}, data) {
+            commit("MOVE_SLIDE", data);
         }
     },
 
     getters: {
         getSettings: (state) => state.settings,
-        getSlides: (state) => state.slides,
+        getSlides: (state) => state.slides.sort((a, b) => a - b),
         getActivePosition: (state) => state.activePosition,
     },
 }
