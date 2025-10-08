@@ -4,7 +4,21 @@
 
         Upload <br/><br/>
 
-        <input type="file">
+        <!-- <input type="/file"> -->
+
+        <image-input 
+            :array="urls" 
+            @upload="setUrls"
+        ></image-input>
+
+        <div class="previews" v-if="urls.length">
+            <img 
+                v-for="(src, index) in urls"
+                :src="src"
+                :key="index"
+                class="previews__card"
+            />
+        </div>
 
         <br/><br/>
 
@@ -46,6 +60,8 @@
 </template>
 
 <script>
+import ImageInput from '@/components/ImageInput.vue';
+
 import dataFetchMixin from '@/mixins/dataFetch.mixin';
 
 import { mapActions } from 'vuex';
@@ -53,13 +69,19 @@ import { mapActions } from 'vuex';
 export default {
     name: "UploadView",
     mixins: [ dataFetchMixin ],
+    components: { ImageInput },
     data() {
         return {
-            isRequestActive: false
+            isRequestActive: false,
+            urls: []
         }
     },
     methods: {
         ...mapActions(['moveSlide', 'deleteSlide', 'slidesUpdatePositions']),
+
+        setUrls(array) {
+            this.urls = array;
+        },
 
         move(data, direction) {
             this.moveSlide({ slide: data, direction });
@@ -73,7 +95,7 @@ export default {
             try {
                 this.isRequestActive = true;
                 
-                await this.slidesUpdatePositions();
+                await this.slidesUpdatePositions(this.urls);
 
                 this.isRequestActive = false;
             } catch(error) {
@@ -168,6 +190,21 @@ export default {
         &__left,
         &__right {
 
+        }
+    }
+
+    .previews {
+        margin: 25px auto;
+
+        display: flex;
+        flex-wrap: wrap;
+    
+        &__card {
+            max-width: 250px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+            height: auto;
         }
     }
 </style>
