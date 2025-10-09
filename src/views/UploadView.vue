@@ -6,7 +6,7 @@
 
         <!-- <input type="/file"> -->
 
-        <image-input 
+        <image-input
             :array="urls" 
             @upload="setUrls"
         ></image-input>

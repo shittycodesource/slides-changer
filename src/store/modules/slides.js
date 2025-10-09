@@ -113,13 +113,8 @@ export default {
 
                 const slides = getters.getSlides;
 
-                console.log('1', slides)
-                console.log('2', slides.at(-1))
-                console.log('3', slides.at(-1).position)
                 if (urls.length) {
-                    console.log(slides)
                     let lastPosition = slides.at(-1).position + 1;
-                    console.log(lastPosition)
 
                     for (let i = 0; i <= urls.length - 1; i++) {
                         slides.push({ url: urls[i], position: lastPosition });
